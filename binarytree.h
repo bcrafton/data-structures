@@ -10,7 +10,7 @@ typedef struct Binarytree Binarytree;
 typedef void* TREE_TYPE;
 
 struct BinarytreeNode {
-	TREE_TYPE data;
+	TREE_TYPE value;
 	BinarytreeNode* left;
 	BinarytreeNode* right;
 };
@@ -18,14 +18,14 @@ struct BinarytreeNode {
 struct Binarytree{
 	int size;
 	BinarytreeNode* root;
-	void (*tree_print_ptr)(void*);
-	int (*tree_compare_ptr)(void*, void*);
+	void (*tree_print_function)(void*);
+	int (*tree_compare_function)(void*, void*);
 };
 
-BinarytreeNode* binarytree_node_constructor(TREE_TYPE data);
-Binarytree* binarytree_constructor( int (*tree_compare_ptr)(void*, void*) );
-Binarytree* binarytree_constructor_print( void (*tree_print_ptr)(void*), int (*tree_compare_ptr)(void*, void*) );
-void binarytree_add(TREE_TYPE data, Binarytree* tree);
+BinarytreeNode* binarytree_node_constructor(TREE_TYPE value);
+Binarytree* binarytree_constructor( int (*tree_compare_function)(void*, void*) );
+Binarytree* binarytree_constructor_print( void (*tree_print_function)(void*), int (*tree_compare_function)(void*, void*) );
+void binarytree_add(TREE_TYPE value, Binarytree* tree);
 void binarytree_stack_print(Binarytree *tree);
 
 #endif

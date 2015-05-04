@@ -1,31 +1,34 @@
 #include "binarytree.h"
 
-BinarytreeNode* binarytree_node_constructor(TREE_TYPE data){
+static int compare(TREE_TYPE v1, TREE_TYPE v2, Binarytree *tree);
+static int print(TREE_TYPE v, Binarytree *tree);
+
+BinarytreeNode* binarytree_node_constructor(TREE_TYPE value){
 	BinarytreeNode *node = malloc(sizeof(BinarytreeNode));
 	node->right = NULL;
 	node->left = NULL;
-	node->data = data;
+	node->value = value;
 	return node;
 }
 
-Binarytree* binarytree_constructor_print( void (*tree_print_ptr)(void*), int (*tree_compare_ptr)(void*, void*) ){
+Binarytree* binarytree_constructor_print( void (*tree_print_function)(void*), int (*tree_compare_function)(void*, void*) ){
 	Binarytree *tree = malloc(sizeof(Binarytree));
 	tree->root = NULL;
-	tree->tree_print_ptr = tree_print_ptr;
-	tree->tree_compare_ptr = tree_compare_ptr;
+	tree->tree_print_function = tree_print_function;
+	tree->tree_compare_function = tree_compare_function;
 	return tree;
 }
 
-Binarytree* binarytree_constructor( int (*tree_compare_ptr)(void*, void*) ){
+Binarytree* binarytree_constructor( int (*tree_compare_function)(void*, void*) ){
 	Binarytree *tree = malloc(sizeof(Binarytree));
 	tree->root = NULL;
-	tree->tree_print_ptr = NULL;
-	tree->tree_compare_ptr = tree_compare_ptr;
+	tree->tree_print_function = NULL;
+	tree->tree_compare_function = tree_compare_function;
 	return tree;
 }
 
-void binarytree_add(TREE_TYPE data, Binarytree* tree){
-	BinarytreeNode* newNode = binarytree_node_constructor(data);
+void binarytree_add(TREE_TYPE value, Binarytree* tree){
+	BinarytreeNode* newNode = binarytree_node_constructor(value);
 	tree->size++;
 	
 	if(tree->root == NULL){
@@ -34,7 +37,7 @@ void binarytree_add(TREE_TYPE data, Binarytree* tree){
 	}
 	BinarytreeNode* itr = tree->root;
 	while(itr != NULL){
-		if( (*(tree->tree_compare_ptr))(data, itr->data) > 0){
+		if( compare(value, itr->value, tree) > 0){
 			if(itr->right == NULL){
 				itr->right = newNode;
 				return;
@@ -62,8 +65,16 @@ void binarytree_stack_print(Binarytree *tree){
 		if(top->right != NULL){
 			stack_push(top->right, stack);
 		}
-		(*(tree->tree_print_ptr))(top->data);
+		print(top->value, tree);
 		printf("|");
 	}
 	printf("[%d]\n", tree->size);
+}
+
+static int compare(TREE_TYPE v1, TREE_TYPE v2, Binarytree *tree){
+	return (*(tree->tree_compare_function))(v1, v2);
+}
+
+static int print(TREE_TYPE v, Binarytree *tree){
+	(*(tree->tree_print_function))(v);
 }

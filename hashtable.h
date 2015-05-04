@@ -12,12 +12,12 @@ typedef void* KEY_TYPE;
 struct Hashtable{
 	Vector *vector;
 	int size;
-	int (*table_hash_ptr)(void*);
-	int (*table_compare_ptr)(void*, void*);
+	int (*table_hash_function)(void*);
+	int (*table_compare_function)(void*, void*);
 };
 
 void table_add(KEY_TYPE key, VALUE_TYPE value, Hashtable* table);
 int table_contains(KEY_TYPE key, VALUE_TYPE value, Hashtable* table);
-Hashtable* hashtable_constructor(int size, int (*table_hash_ptr)(void*), int (*table_compare_ptr)(void*, void*));
+Hashtable* hashtable_constructor(int size, int (*table_hash_function)(void*), int (*table_compare_function)(void*, void*));
 
 #endif

@@ -5,30 +5,30 @@
 #include <stdlib.h>
 
 typedef void* LIST_TYPE;
-typedef struct Linkedlist Linkedlist;
+typedef struct List List;
 typedef struct Node Node;
 
 struct Node {
-	LIST_TYPE data;
+	LIST_TYPE value;
 	Node* next;
 	Node* prev;
 };
 
-struct Linkedlist{
+struct List{
 	int size;
 	Node* head;
 	Node* tail;
 	void (*list_print_function)(void*);
 };
 
-Node* node_constructor(LIST_TYPE data);
-Linkedlist* linkedlist_constructor();
-Linkedlist* linkedlist_constructor_print( void (*list_print_function)(void*) );
-void linkedlist_append(LIST_TYPE data, Linkedlist* list);
-void linkedlist_print(Linkedlist *list);
-void linkedlist_insert(int index, LIST_TYPE data, Linkedlist *list);
-void linkedlist_prepend(LIST_TYPE data, Linkedlist* list);
-void linkedlist_remove(int index, Linkedlist *list);
-LIST_TYPE linkedlist_get(int index, Linkedlist *list);
+Node* node_constructor(LIST_TYPE value);
+List* list_constructor();
+List* list_constructor_print( void (*list_print_function)(void*) );
+void list_append(LIST_TYPE value, List* list);
+void list_print(List *list);
+void list_insert(int index, LIST_TYPE value, List *list);
+void list_prepend(LIST_TYPE value, List* list);
+void list_remove(int index, List *list);
+LIST_TYPE list_get(int index, List *list);
 
 #endif

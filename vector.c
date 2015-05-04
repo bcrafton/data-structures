@@ -1,5 +1,7 @@
 #include "vector.h"
 
+static int print(VECTOR_TYPE v, Vector *vector);
+
 Vector* vector_constructor_print(void (*vector_print_function)(void*)){
 	Vector *newVector = malloc(sizeof(Vector));
 	newVector->size = 10;
@@ -38,18 +40,18 @@ void vector_resize(Vector *vector){
 	vector->array = newArray;
 }
 
-void vector_add(VECTOR_TYPE data, Vector *vector){
+void vector_add(VECTOR_TYPE value, Vector *vector){
 	if(vector->next >= vector->size){
 		vector_resize(vector);
 	}
-	vector->array[vector->next] = data;
+	vector->array[vector->next] = value;
 	vector->next++;
 }
 
 void vector_print(Vector *vector){
 	int indexCounter;
 	for(indexCounter = 0; indexCounter < vector->next; indexCounter++){
-		(*(vector->vector_print_function))(vector->array[indexCounter]);
+		print(vector->array[indexCounter], vector);
 		printf("|");
 	}
 	printf("[%d]\n", vector->next);
@@ -69,22 +71,26 @@ void vector_removeIndex(int index, Vector *vector){
 	vector->array[vector->next] = 0;
 }
 
-void vector_insert(int index, VECTOR_TYPE data, Vector *vector){
+void vector_insert(int index, VECTOR_TYPE value, Vector *vector){
 	if(vector->next >= vector->size){vector_resize(vector);}
 	int indexCounter;
 	for(indexCounter = vector->next; indexCounter >= index; indexCounter--){
 		vector->array[indexCounter] = vector->array[indexCounter-1];
 	}
-	vector->array[index] = data;
+	vector->array[index] = value;
 	vector->next++;
 }
 
-void vector_set(int index, VECTOR_TYPE data, Vector *vector){
-	vector->array[index] = data;
+void vector_set(int index, VECTOR_TYPE value, Vector *vector){
+	vector->array[index] = value;
 }
 
 void vector_swap(int index1, int index2, Vector *vector){
 	VECTOR_TYPE temp = vector->array[index1];
 	vector->array[index1] = vector->array[index2];
 	vector->array[index2] = temp;
+}
+
+static int print(VECTOR_TYPE v, Vector *vector){
+	(*(vector->vector_print_function))(v);
 }

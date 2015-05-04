@@ -1,20 +1,21 @@
 #include "heap.h"
 
 static int NULL_INDEX = -1; 
+static int compare(HEAP_TYPE v1, HEAP_TYPE v2, Heap *heap);
 
-Heap* heap_constructor_print( void (*heap_print_ptr)(void*), int (*heap_compare_ptr)(void*, void*) ){
+Heap* heap_constructor_print( void (*heap_print_function)(void*), int (*heap_compare_function)(void*, void*) ){
 	Heap* heap = malloc(sizeof(Heap));
-	heap->vector = vector_constructor_print(heap_print_ptr);
+	heap->vector = vector_constructor_print(heap_print_function);
 	heap->size = 0;
-	heap->heap_compare_ptr = heap_compare_ptr;
+	heap->heap_compare_function = heap_compare_function;
 	return heap;
 }
 
-Heap* heap_constructor( int (*heap_compare_ptr)(void*, void*) ){
+Heap* heap_constructor( int (*heap_compare_function)(void*, void*) ){
 	Heap* heap = malloc(sizeof(Heap));
 	heap->vector = vector_constructor();
 	heap->size = 0;
-	heap->heap_compare_ptr = heap_compare_ptr;
+	heap->heap_compare_function = heap_compare_function;
 	return heap;
 }
 
@@ -46,7 +47,7 @@ void heap_maxHeapify(int current_index, Heap* heap){
 		HEAP_TYPE left_child = vector_get(left_child_index, vector);
 		HEAP_TYPE right_child = vector_get(right_child_index, vector);
 
-		if(left_child_index <= heapSize-1 && (*(heap->heap_compare_ptr))(left_child, current) > 0 ) {
+		if(left_child_index <= heapSize-1 && compare(left_child, current, heap) > 0 ) {
 			largest_index = left_child_index;
 		} else {
 			largest_index = current_index;
@@ -54,7 +55,7 @@ void heap_maxHeapify(int current_index, Heap* heap){
 
 		HEAP_TYPE largest = vector_get(largest_index, vector);
 
-		if(right_child_index <= heapSize-1 && (*(heap->heap_compare_ptr))(right_child, largest) > 0 ) {
+		if(right_child_index <= heapSize-1 && compare(right_child, largest, heap) > 0 ) {
 			largest_index = right_child_index;
 		}
 
@@ -66,8 +67,8 @@ void heap_maxHeapify(int current_index, Heap* heap){
 	}
 }
 
-void heap_add(HEAP_TYPE data, Heap *heap){
-	vector_add(data, heap->vector);
+void heap_add(HEAP_TYPE value, Heap *heap){
+	vector_add(value, heap->vector);
 	heap->size++;
 }
 
@@ -97,3 +98,6 @@ void heap_sort(Heap *heap){
 	heap->size = heapSize;
 }
 
+static int compare(HEAP_TYPE v1, HEAP_TYPE v2, Heap *heap){
+	return (*(heap->heap_compare_function))(v1, v2);
+}

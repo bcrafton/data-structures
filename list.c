@@ -1,14 +1,16 @@
 #include "list.h"
 
-Node* node_constructor(LIST_TYPE data){
+static int print(LIST_TYPE v, List *list);
+
+Node* node_constructor(LIST_TYPE value){
 	Node *node = malloc(sizeof(Node));
 	node->next = NULL;
 	node->prev = NULL;
-	node->data = data;
+	node->value = value;
 }
 
-Linkedlist* linkedlist_constructor_print( void (*list_print_function)(void*) ){
-	Linkedlist *list = malloc(sizeof(Linkedlist));
+List* list_constructor_print( void (*list_print_function)(void*) ){
+	List *list = malloc(sizeof(List));
 	list->head = NULL;
 	list->tail = NULL;
 	list->size = 0;
@@ -16,8 +18,8 @@ Linkedlist* linkedlist_constructor_print( void (*list_print_function)(void*) ){
 	return list;
 }
 
-Linkedlist* linkedlist_constructor(){
-	Linkedlist *list = malloc(sizeof(Linkedlist));
+List* list_constructor(){
+	List *list = malloc(sizeof(List));
 	list->head = NULL;
 	list->tail = NULL;
 	list->size = 0;
@@ -25,8 +27,8 @@ Linkedlist* linkedlist_constructor(){
 	return list;
 }
 
-void linkedlist_append(LIST_TYPE data, Linkedlist* list){
-	Node* newNode = node_constructor(data);
+void list_append(LIST_TYPE value, List* list){
+	Node* newNode = node_constructor(value);
 	if(list->head == NULL && list->tail == NULL){
 		list->head = newNode;
 		list->tail = newNode;
@@ -39,8 +41,8 @@ void linkedlist_append(LIST_TYPE data, Linkedlist* list){
 	list->size++;
 }
 
-void linkedlist_prepend(LIST_TYPE data, Linkedlist* list){
-	Node* newNode = node_constructor(data);
+void list_prepend(LIST_TYPE value, List* list){
+	Node* newNode = node_constructor(value);
 	if(list->head == NULL && list->tail == NULL){
 		list->head = newNode;
 		list->tail = newNode;
@@ -54,8 +56,8 @@ void linkedlist_prepend(LIST_TYPE data, Linkedlist* list){
 }
 
 // code will break if only 1 element in the list
-void linkedlist_insert(int index, LIST_TYPE data, Linkedlist *list){
-	Node* newNode = node_constructor(data);
+void list_insert(int index, LIST_TYPE value, List *list){
+	Node* newNode = node_constructor(value);
 	if(list->head == NULL && list->tail == NULL){
 		list->head = newNode;
 		list->tail = newNode;
@@ -89,7 +91,7 @@ void linkedlist_insert(int index, LIST_TYPE data, Linkedlist *list){
 	list->size++;
 }
 
-void linkedlist_remove(int index, Linkedlist *list){
+void list_remove(int index, List *list){
 	if(list->head == NULL && list->tail == NULL){
 		return;
 	}
@@ -121,23 +123,27 @@ void linkedlist_remove(int index, Linkedlist *list){
 	list->size--;
 }
 
-LIST_TYPE linkedlist_get(int index, Linkedlist *list){
+LIST_TYPE list_get(int index, List *list){
 	int counter = 0;
 	Node* ptr;
 	for(ptr = list->head; ptr != NULL; ptr = ptr->next){
 		if(counter == index){
-			return ptr->data;
+			return ptr->value;
 		}
 		counter++;
 	}
 	return NULL;
 }
 
-void linkedlist_print(Linkedlist *list){
+void list_print(List *list){
 	Node *ptr;
 	for(ptr = list->head; ptr != NULL; ptr = ptr->next){
-		(*(list->list_print_function))(ptr->data);
+		print(ptr->value, list);
 		printf("|");
 	}
 	printf("[%d]\n", list->size);
+}
+
+static int print(LIST_TYPE v, List *list){
+	(*(list->list_print_function))(v);
 }

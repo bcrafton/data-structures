@@ -9,7 +9,7 @@ typedef struct Queue Queue;
 typedef void* QUEUE_TYPE;
 
 struct Queue{
-	Linkedlist *list;
+	List *list;
 };
 
 Queue* queue_constructor();
