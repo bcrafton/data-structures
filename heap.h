@@ -24,6 +24,23 @@ void heap_maxHeapify(int current_index, Heap* heap);
 void heap_buildMaxHeap(Heap* heap);
 void heap_add(HEAP_TYPE value, Heap *heap);
 void heap_print(Heap *heap);
-void heap_sort(Heap *heap);
+
+void heap_minHeapify(int current_index, Heap *heap);
+void heap_buildMinHeap(Heap *heap);
+
+void heap_sort_inc(Heap *heap);
+void heap_sort_dec(Heap *heap);
+
+HEAP_TYPE getMaxHeapMaximum(Heap *heap);
+HEAP_TYPE getMinHeapMinimum(Heap *heap);
+
+HEAP_TYPE extractMaxHeapMaximum(Heap *heap);
+HEAP_TYPE extractMinHeapMinimum(Heap *heap);
+
+void maxHeapIncreaseKey(int current_index, Heap *heap);
+void minHeapDecreaseKey(int current_index, Heap *heap);
+
+void maxHeapInsert(HEAP_TYPE value, Heap *heap);
+void minHeapInsert(HEAP_TYPE value, Heap *heap);
 
 #endif

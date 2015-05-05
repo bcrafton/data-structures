@@ -68,7 +68,8 @@ void vector_removeIndex(int index, Vector *vector){
 	for(indexCounter = index; indexCounter < vector->next; indexCounter++){
 		vector->array[indexCounter] = vector->array[indexCounter+1];
 	}
-	vector->array[vector->next] = 0;
+	// vector only deals with pointers, so this should be set to NULL.
+	vector->array[vector->next] = NULL;
 }
 
 void vector_insert(int index, VECTOR_TYPE value, Vector *vector){

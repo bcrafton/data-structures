@@ -118,12 +118,12 @@ int main(){
 
 	heap_buildMaxHeap(heap);
 	heap_print(heap);
-	heap_sort(heap);
+	heap_sort_inc(heap);
 	heap_print(heap);
 
-	heap_buildMaxHeap(sheap);
+	heap_buildMinHeap(sheap);
 	heap_print(sheap);
-	heap_sort(sheap);
+	heap_sort_dec(sheap);
 	heap_print(sheap);
 
 	Queue* queue = queue_constructor();
