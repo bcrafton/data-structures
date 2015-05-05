@@ -41,4 +41,10 @@ void print_graph(Graph *graph);
 void print_edge(Edge *edge);
 void print_vertex(Vertex *vertex);
 
+Edge* get_edge(int edge_id);
+
+Vertex* get_vertex(int vertex_id);
+
+Vector* adjacent_vertices(Vertex *vertex);
+
 #endif

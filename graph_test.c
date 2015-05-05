@@ -2,8 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include "graph.h"
+#include "vector.h"
 #include <assert.h>
 
+void vertex_print_function(void *v){
+	print_vertex((Vertex*)v);
+	//print_vertex(v);
+}
 void int_print(void *s){
 	printf("%d", *((int*)s));
 }
@@ -23,8 +28,6 @@ int* get_int_ptr(int value){
 }
 
 int main(){
-
-
 	char* a1 = "Brian";
 	char* b1 = "Julia";
 	char* c1 = "Rex";
@@ -40,4 +43,12 @@ int main(){
 	Edge* e3 = add_edge(v3, v1, 1, graph);
 
 	print_graph(graph);
+
+	printf("\n\n\n");
+
+	print_vertex(v2);
+	Vector* vertices = adjacent_vertices(v2);
+	printf("adjacents:\n");
+	vertices->vector_print_function = &vertex_print_function;
+	vector_print(vertices);
 }

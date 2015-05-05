@@ -42,10 +42,9 @@ Graph* graph_constructor(){
 
 void print_vertex(Vertex *vertex){
 	printf("Vertex id#: %d\n", vertex->id);
-	int edgeCount = vector_size(vertex->edges);
-	printf("Connected Edges (%d):\n", edgeCount);
+	printf("Connected Edges (%d):\n", vertex_edge_count(vertex));
 	int edgeCounter = 0;
-	for(edgeCounter = 0; edgeCounter < edgeCount; edgeCounter++){
+	for(edgeCounter = 0; edgeCounter < vertex_edge_count(vertex); edgeCounter++){
 		Edge* e = vector_get(edgeCounter, vertex->edges);
 		print_edge(e);
 	}
@@ -55,11 +54,46 @@ void print_edge(Edge *edge){
 	printf("Edge id#: %d, v1: %d, v2: %d\n", edge->id, edge->v1->id, edge->v2->id);
 }
 
+int vertex_edge_count(Vertex* vertex){
+	vector_size(vertex->edges);
+}
+
+int graph_edge_count(Graph *graph){
+	vector_size(graph->edge_list);
+}
+
+int graph_vertex_count(Graph *graph){
+	vector_size(graph->vertex_list);
+}
+
+Edge* get_edge(int edge_id){
+
+}
+
+Vertex* get_vertex(int vertex_id){
+
+}
+
+Vector* adjacent_vertices(Vertex *vertex){
+	Vector* vertices = vector_constructor();
+	int edge_counter = 0;
+	for(edge_counter = 0; edge_counter < vertex_edge_count(vertex); edge_counter++){
+		Edge *e = vector_get(edge_counter, vertex->edges);
+		if(e->v1 != vertex){
+			vector_add(e->v1, vertices);
+		}
+		else{
+			vector_add(e->v2, vertices);
+		}
+	}
+	return vertices;
+}
+
 // will have to pass the print functions for vertex and edge?
 // or can just use the vector get functions and do it manually.
 void print_graph(Graph *graph){
 	int vertexCounter = 0;
-	for(vertexCounter = 0; vertexCounter < vertex_count; vertexCounter++){
+	for(vertexCounter = 0; vertexCounter < graph_vertex_count(graph); vertexCounter++){
 		Vertex* v = vector_get(vertexCounter, graph->vertex_list);
 		print_vertex(v);
 	}

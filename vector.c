@@ -1,6 +1,7 @@
 #include "vector.h"
 
 static int print(VECTOR_TYPE v, Vector *vector);
+static int compare(VECTOR_TYPE v1, VECTOR_TYPE v2, Vector *vector);
 
 Vector* vector_constructor_print(void (*vector_print_function)(void*)){
 	Vector *newVector = malloc(sizeof(Vector));
@@ -8,6 +9,7 @@ Vector* vector_constructor_print(void (*vector_print_function)(void*)){
 	newVector->next = 0;
 	newVector->array = malloc(newVector->capacity * sizeof(VECTOR_TYPE));
 	newVector->vector_print_function = vector_print_function;
+	newVector->vector_compare_function = NULL;
 	return newVector;
 }
 
@@ -17,6 +19,7 @@ Vector* vector_constructor(){
 	newVector->next = 0;
 	newVector->array = malloc(newVector->capacity * sizeof(VECTOR_TYPE));
 	newVector->vector_print_function = NULL;
+	newVector->vector_compare_function = NULL;
 	return newVector;
 }
 
@@ -26,6 +29,17 @@ Vector* vector_constructor_capacity(int capacity){
 	newVector->next = 0;
 	newVector->array = malloc(newVector->capacity * sizeof(VECTOR_TYPE));
 	newVector->vector_print_function = NULL;
+	newVector->vector_compare_function = NULL;
+	return newVector;
+}
+
+Vector* vector_constructor_compare( void (*vector_print_function)(void*), int (*vector_compare_function)(void*, void*) ){
+	Vector *newVector = malloc(sizeof(Vector));
+	newVector->capacity = 10;
+	newVector->next = 0;
+	newVector->array = malloc(newVector->capacity * sizeof(VECTOR_TYPE));
+	newVector->vector_print_function = vector_print_function;
+	newVector->vector_compare_function = vector_compare_function;
 	return newVector;
 }
 
@@ -96,6 +110,19 @@ int vector_size(Vector *vector){
 	return vector->next;
 }
 
+VECTOR_TYPE linear_search(VECTOR_TYPE value, Vector *vector){
+	int indexCounter = 0;
+	for(indexCounter = 0; indexCounter < vector_size(vector); indexCounter++){
+		if( compare(value, vector_get(indexCounter, vector), vector) == 0 ){
+			return vector_get(indexCounter, vector);
+		}
+	}
+}
+
 static int print(VECTOR_TYPE v, Vector *vector){
 	(*(vector->vector_print_function))(v);
+}
+
+static int compare(VECTOR_TYPE v1, VECTOR_TYPE v2, Vector *vector){
+	return (*(vector->vector_compare_function))(v1, v2);
 }

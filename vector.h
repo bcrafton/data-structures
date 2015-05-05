@@ -12,6 +12,7 @@ struct Vector{
 	int capacity;
 	VECTOR_TYPE *array;
 	void (*vector_print_function)(void*);
+	int (*vector_compare_function)(void*, void*);
 };
 
 
@@ -22,6 +23,7 @@ struct Vector{
 Vector* vector_constructor_print( void (*vector_print_function)(void*) );;
 Vector* vector_constructor();
 Vector* vector_constructor_capacity(int capacity);
+Vector* vector_constructor_compare( void (*vector_print_function)(void*), int (*vector_compare_function)(void*, void*) );
 void  vector_resize(Vector *vector);
 void vector_add(VECTOR_TYPE value, Vector *vector);
 void vector_print(Vector *vector);
@@ -30,5 +32,6 @@ void vector_removeIndex(int index, Vector *vector);
 void vector_insert(int index, VECTOR_TYPE value, Vector *vector);
 void vector_swap(int index1, int index2, Vector *vector);
 int vector_size(Vector *vector);
+VECTOR_TYPE linear_search(VECTOR_TYPE value, Vector *vector);
 
 #endif
