@@ -24,5 +24,8 @@ int main(){
 
 	vector_print(vector);
 
+	assert(vector->next == 3);
+	assert(vector_size(vector) == 3);
+
 	printf("test complete\n");
 }

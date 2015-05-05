@@ -11,12 +11,14 @@ typedef struct Edge Edge;
 typedef struct Vertex Vertex;
 
 struct Edge {
+	int id;
 	int weight;
 	Vertex* v1;
 	Vertex* v2;
 };
 
 struct Vertex {
+	int id;
 	GRAPH_TYPE value;
 	Vector* edges;
 };
@@ -35,5 +37,8 @@ Edge* edge_constructor(Vertex* v1, Vertex* v2, int weight);
 Vertex* vertex_constructor(GRAPH_TYPE value);
 */
 Graph* graph_constructor();
+void print_graph(Graph *graph);
+void print_edge(Edge *edge);
+void print_vertex(Vertex *vertex);
 
 #endif

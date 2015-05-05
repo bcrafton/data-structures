@@ -1,16 +1,23 @@
 #include "graph.h"
 
+static int edge_count = 0;
+static int vertex_count = 0;
+
 static Edge* edge_constructor(Vertex* v1, Vertex* v2, int weight){
 	Edge* edge = malloc(sizeof(Edge));
 	edge->v1 = v1;
 	edge->v2 = v2;
 	edge->weight = weight;
+	edge->id = edge_count;
+	edge_count++;
 	return edge;
 }
 static Vertex* vertex_constructor(GRAPH_TYPE value){
 	Vertex* vertex = malloc(sizeof(Vertex));
 	vertex->value = value;
 	vertex->edges = vector_constructor();
+	vertex->id = vertex_count;
+	vertex_count++;
 	return vertex;
 }
 
@@ -31,4 +38,29 @@ Graph* graph_constructor(){
 	graph->vertex_list = vector_constructor();
 	graph->edge_list = vector_constructor();
 	return graph;
+}
+
+void print_vertex(Vertex *vertex){
+	printf("Vertex id#: %d\n", vertex->id);
+	int edgeCount = vector_size(vertex->edges);
+	printf("Connected Edges (%d):\n", edgeCount);
+	int edgeCounter = 0;
+	for(edgeCounter = 0; edgeCounter < edgeCount; edgeCounter++){
+		Edge* e = vector_get(edgeCounter, vertex->edges);
+		print_edge(e);
+	}
+}
+
+void print_edge(Edge *edge){
+	printf("Edge id#: %d, v1: %d, v2: %d\n", edge->id, edge->v1->id, edge->v2->id);
+}
+
+// will have to pass the print functions for vertex and edge?
+// or can just use the vector get functions and do it manually.
+void print_graph(Graph *graph){
+	int vertexCounter = 0;
+	for(vertexCounter = 0; vertexCounter < vertex_count; vertexCounter++){
+		Vertex* v = vector_get(vertexCounter, graph->vertex_list);
+		print_vertex(v);
+	}
 }

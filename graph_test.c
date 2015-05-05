@@ -23,6 +23,8 @@ int* get_int_ptr(int value){
 }
 
 int main(){
+
+
 	char* a1 = "Brian";
 	char* b1 = "Julia";
 	char* c1 = "Rex";
@@ -36,4 +38,6 @@ int main(){
 	Edge* e1 = add_edge(v1, v2, 1, graph);
 	Edge* e2 = add_edge(v2, v3, 1, graph);
 	Edge* e3 = add_edge(v3, v1, 1, graph);
+
+	print_graph(graph);
 }
