@@ -1,25 +1,24 @@
 #include "vector.h"
 
+static void set_null(VECTOR_TYPE *array, int capacity);
 static int print(VECTOR_TYPE v, Vector *vector);
 static int compare(VECTOR_TYPE v1, VECTOR_TYPE v2, Vector *vector);
 
-Vector* vector_constructor_print(void (*vector_print_function)(void*)){
-	Vector *newVector = malloc(sizeof(Vector));
-	newVector->capacity = 10;
-	newVector->next = 0;
-	newVector->array = malloc(newVector->capacity * sizeof(VECTOR_TYPE));
-	newVector->vector_print_function = vector_print_function;
-	newVector->vector_compare_function = NULL;
-	return newVector;
-}
-
+//code reuse of the defualt constructor here, was not tested ... may cause bugs
 Vector* vector_constructor(){
 	Vector *newVector = malloc(sizeof(Vector));
 	newVector->capacity = 10;
 	newVector->next = 0;
 	newVector->array = malloc(newVector->capacity * sizeof(VECTOR_TYPE));
+	set_null(newVector->array, newVector->capacity);
 	newVector->vector_print_function = NULL;
 	newVector->vector_compare_function = NULL;
+	return newVector;
+}
+
+Vector* vector_constructor_print(void (*vector_print_function)(void*)){
+	Vector *newVector = vector_constructor();
+	newVector->vector_print_function = vector_print_function;
 	return newVector;
 }
 
@@ -28,16 +27,14 @@ Vector* vector_constructor_capacity(int capacity){
 	newVector->capacity = capacity;
 	newVector->next = 0;
 	newVector->array = malloc(newVector->capacity * sizeof(VECTOR_TYPE));
+	set_null(newVector->array, newVector->capacity);
 	newVector->vector_print_function = NULL;
 	newVector->vector_compare_function = NULL;
 	return newVector;
 }
 
 Vector* vector_constructor_compare( void (*vector_print_function)(void*), int (*vector_compare_function)(void*, void*) ){
-	Vector *newVector = malloc(sizeof(Vector));
-	newVector->capacity = 10;
-	newVector->next = 0;
-	newVector->array = malloc(newVector->capacity * sizeof(VECTOR_TYPE));
+	Vector *newVector = vector_constructor();
 	newVector->vector_print_function = vector_print_function;
 	newVector->vector_compare_function = vector_compare_function;
 	return newVector;
@@ -46,7 +43,7 @@ Vector* vector_constructor_compare( void (*vector_print_function)(void*), int (*
 void vector_resize(Vector *vector){
 	vector->capacity = vector->capacity * 2;
 	VECTOR_TYPE *newArray = malloc(vector->capacity * sizeof(VECTOR_TYPE));
-
+	set_null(newArray, vector->capacity);
 	int indexCounter;
 	for(indexCounter = 0; indexCounter < vector->next; indexCounter++){
 		newArray[indexCounter] = vector->array[indexCounter];
@@ -116,6 +113,13 @@ VECTOR_TYPE linear_search(VECTOR_TYPE value, Vector *vector){
 		if( compare(value, vector_get(indexCounter, vector), vector) == 0 ){
 			return vector_get(indexCounter, vector);
 		}
+	}
+}
+
+static void set_null(VECTOR_TYPE *array, int capacity){
+	int indexCounter = 0;
+	for(indexCounter = 0; indexCounter < capacity; indexCounter++){
+		array[indexCounter] = NULL;
 	}
 }
 

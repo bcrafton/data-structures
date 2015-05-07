@@ -7,7 +7,6 @@
 
 void vertex_print_function(void *v){
 	print_vertex((Vertex*)v);
-	//print_vertex(v);
 }
 void int_print(void *s){
 	printf("%d", *((int*)s));
@@ -34,13 +33,13 @@ int main(){
 
 	Graph* graph = graph_constructor();
 
-	Vertex* v1 = add_vertex(a1, graph);
-	Vertex* v2 = add_vertex(b1, graph);
-	Vertex* v3 = add_vertex(c1, graph);
+	Vertex* v1 = add_vertex(0, a1, graph);
+	Vertex* v2 = add_vertex(1, b1, graph);
+	Vertex* v3 = add_vertex(2, c1, graph);
 
-	Edge* e1 = add_edge(v1, v2, 1, graph);
-	Edge* e2 = add_edge(v2, v3, 1, graph);
-	Edge* e3 = add_edge(v3, v1, 1, graph);
+	Edge* e1 = add_edge(0, v1, v2, 1, graph);
+	Edge* e2 = add_edge(1, v2, v3, 1, graph);
+	Edge* e3 = add_edge(2, v3, v1, 1, graph);
 
 	print_graph(graph);
 
@@ -51,4 +50,16 @@ int main(){
 	printf("adjacents:\n");
 	vertices->vector_print_function = &vertex_print_function;
 	vector_print(vertices);
+
+	printf("\n");
+	BredthFirstTraversal(v1);
+	printf("\n");
+	DepthFirstTraversal(v1);
+	printf("\n");
+	Vertex* v = get_vertex(0, graph);
+	printf("\n%d\n", v->key);
+	v = get_vertex(1, graph);
+	printf("\n%d\n", v->key);
+	v = get_vertex(2, graph);
+	printf("\n%d\n", v->key);
 }

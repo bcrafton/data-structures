@@ -11,13 +11,13 @@ typedef void* KEY_TYPE;
 
 struct Hashtable{
 	Vector *vector;
-	int size;
+	int capacity;
 	int (*table_hash_function)(void*);
-	int (*table_compare_function)(void*, void*);
 };
 
 void table_add(KEY_TYPE key, VALUE_TYPE value, Hashtable* table);
-int table_contains(KEY_TYPE key, VALUE_TYPE value, Hashtable* table);
-Hashtable* hashtable_constructor(int size, int (*table_hash_function)(void*), int (*table_compare_function)(void*, void*));
-
+int table_contains(KEY_TYPE key, Hashtable* table);
+VALUE_TYPE table_get(KEY_TYPE key, Hashtable* table);
+Hashtable* hashtable_constructor(int capacity, int (*table_hash_function)(void*) );
+int table_size(Hashtable* table);
 #endif
