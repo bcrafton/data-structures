@@ -18,19 +18,27 @@ int cstring_compare(void *o1, void *o2){
 }
 
 int main(){
-	char* a1 = "Brian";
-	char* b1 = "Julia";
-	char* c1 = "Rex";
+	char* a = "Brian";
+	char* b = "Julia";
+	char* c = "Alex";
+
+	char* a1 = "Crafton";
+	char* b1 = "O'brien";
+	char* c1 = "Hoadly";
 
 	PriorityQueue* queue = priorityqueue_constructor(&cstring_compare);
 
-	priorityqueue_push(a1, queue);
-	priorityqueue_push(b1, queue);
-	priorityqueue_push(c1, queue);
+	priorityqueue_push(a, a1, queue);
+	priorityqueue_push(b, b1, queue);
+	priorityqueue_push(c, c1, queue);
 	
+	char* nig = "Alex";
+
+	priorityqueueSetKey(nig, c1, queue);
+
 	assert(strcmp( (char*) priorityqueue_pop(queue), c1) == 0 );
-	assert(strcmp( (char*) priorityqueue_pop(queue), b1) == 0 );
 	assert(strcmp( (char*) priorityqueue_pop(queue), a1) == 0 );
+	assert(strcmp( (char*) priorityqueue_pop(queue), b1) == 0 );
 
 	printf("test complete\n");
 }

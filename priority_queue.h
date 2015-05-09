@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include "heap.h"
 
-typedef void* PRIORITYQUEUE_TYPE;
+typedef void* KEY_TYPE;
+typedef void* VALUE_TYPE;
 typedef struct PriorityQueue PriorityQueue;
 
 struct PriorityQueue{
@@ -13,9 +14,10 @@ struct PriorityQueue{
 };
 
 PriorityQueue* priorityqueue_constructor( int (*priority_queue_compare_function)(void*, void*) );
-void priorityqueue_push(PRIORITYQUEUE_TYPE value, PriorityQueue *queue);
-PRIORITYQUEUE_TYPE priorityqueue_pop(PriorityQueue *queue);
-PRIORITYQUEUE_TYPE priorityqueue_front(PriorityQueue *queue);
+void priorityqueue_push(KEY_TYPE key, VALUE_TYPE value, PriorityQueue *queue);
+VALUE_TYPE priorityqueue_pop(PriorityQueue *queue);
+VALUE_TYPE priorityqueue_front(PriorityQueue *queue);
 int priorityqueueIsEmpty(PriorityQueue *queue);
+void priorityqueueSetKey(KEY_TYPE key, VALUE_TYPE value, PriorityQueue* queue);
 
 #endif

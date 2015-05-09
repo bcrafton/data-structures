@@ -1,13 +1,23 @@
 #include "heap.h"
 
 static int NULL_INDEX = -1; 
-static int compare(HEAP_TYPE v1, HEAP_TYPE v2, Heap *heap);
+static int compare(HeapNode* v1, HeapNode* v2, Heap *heap);
+static HeapNode* heap_get(int current_index, Heap* heap);
+static int print(void* o, Heap* heap);
+
+HeapNode* heap_node_constructor(KEY_TYPE key, VALUE_TYPE value, Heap *heap){
+	HeapNode* node = malloc(sizeof(HeapNode));
+	node->key = key;
+	node->value = value;
+	return node;
+}
 
 Heap* heap_constructor_print( void (*heap_print_function)(void*), int (*heap_compare_function)(void*, void*) ){
 	Heap* heap = malloc(sizeof(Heap));
-	heap->vector = vector_constructor_print(heap_print_function);
+	heap->vector = vector_constructor();
 	heap->size = 0;
 	heap->heap_compare_function = heap_compare_function;
+	heap->heap_print_function = heap_print_function;
 	return heap;
 }
 
@@ -16,6 +26,7 @@ Heap* heap_constructor( int (*heap_compare_function)(void*, void*) ){
 	heap->vector = vector_constructor();
 	heap->size = 0;
 	heap->heap_compare_function = heap_compare_function;
+	heap->heap_print_function = NULL;
 	return heap;
 }
 
@@ -28,9 +39,7 @@ int heap_right(int current_index){
 int heap_left(int current_index){
 	return 2*current_index+1;
 }
-HEAP_TYPE heap_get(int current_index, Heap* heap){
-	return vector_get(current_index, heap->vector);
-}
+
 
 void heap_maxHeapify(int current_index, Heap* heap){
 	int left_child_index;
@@ -43,9 +52,9 @@ void heap_maxHeapify(int current_index, Heap* heap){
 		left_child_index = heap_left(current_index);
 		right_child_index = heap_right(current_index);
 
-		HEAP_TYPE current = vector_get(current_index, vector);
-		HEAP_TYPE left_child = vector_get(left_child_index, vector);
-		HEAP_TYPE right_child = vector_get(right_child_index, vector);
+		HeapNode* current = vector_get(current_index, vector);
+		HeapNode* left_child = vector_get(left_child_index, vector);
+		HeapNode* right_child = vector_get(right_child_index, vector);
 
 		if(left_child_index <= heapSize-1 && compare(left_child, current, heap) > 0 ) {
 			largest_index = left_child_index;
@@ -53,7 +62,7 @@ void heap_maxHeapify(int current_index, Heap* heap){
 			largest_index = current_index;
 		}
 
-		HEAP_TYPE largest = vector_get(largest_index, vector);
+		HeapNode* largest = vector_get(largest_index, vector);
 
 		if(right_child_index <= heapSize-1 && compare(right_child, largest, heap) > 0 ) {
 			largest_index = right_child_index;
@@ -67,8 +76,9 @@ void heap_maxHeapify(int current_index, Heap* heap){
 	}
 }
 
-void heap_add(HEAP_TYPE value, Heap *heap){
-	vector_add(value, heap->vector);
+void heap_add(KEY_TYPE key, VALUE_TYPE value, Heap *heap){
+	HeapNode* node = heap_node_constructor(key, value, heap);
+	vector_add(node, heap->vector);
 	heap->size++;
 }
 
@@ -78,10 +88,6 @@ void heap_buildMaxHeap(Heap* heap){
 	{
 		heap_maxHeapify(index_counter, heap);
 	}
-}
-
-void heap_print(Heap *heap){
-	vector_print(heap->vector);
 }
 
 void heap_minHeapify(int current_index, Heap *heap){
@@ -95,9 +101,9 @@ void heap_minHeapify(int current_index, Heap *heap){
 		left_child_index = heap_left(current_index);
 		right_child_index = heap_right(current_index);
 
-		HEAP_TYPE current = vector_get(current_index, vector);
-		HEAP_TYPE left_child = vector_get(left_child_index, vector);
-		HEAP_TYPE right_child = vector_get(right_child_index, vector);
+		HeapNode* current = vector_get(current_index, vector);
+		HeapNode* left_child = vector_get(left_child_index, vector);
+		HeapNode* right_child = vector_get(right_child_index, vector);
 
 		if(left_child_index <= heapSize-1 && compare(left_child, current, heap) < 0 ) {
 			smallest_index = left_child_index;
@@ -105,7 +111,7 @@ void heap_minHeapify(int current_index, Heap *heap){
 			smallest_index = current_index;
 		}
 
-		HEAP_TYPE smallest = vector_get(smallest_index, vector);
+		HeapNode* smallest = vector_get(smallest_index, vector);
 
 		if(right_child_index <= heapSize-1 && compare(right_child, smallest, heap) < 0 ) {
 			smallest_index = right_child_index;
@@ -155,30 +161,41 @@ void heap_sort_dec(Heap *heap){
 	heap->size = heapSize;
 }
 
-HEAP_TYPE getMaxHeapMaximum(Heap *heap){
-	return vector_get(0, heap->vector);
+void heap_print(Heap *heap){
+	int indexCounter;
+	for(indexCounter = 0; indexCounter < vector_size(heap->vector); indexCounter++){
+		print(vector_get(indexCounter, heap->vector), heap);
+		printf("|");
+	}
+	printf("[%d]\n", vector_size(heap->vector));
 }
-HEAP_TYPE getMinHeapMinimum(Heap *heap){
-	return vector_get(0, heap->vector);
+
+VALUE_TYPE getMaxHeapMaximum(Heap *heap){
+	HeapNode* node = vector_get(0, heap->vector);
+	return node->value;
+}
+VALUE_TYPE getMinHeapMinimum(Heap *heap){
+	HeapNode* node = vector_get(0, heap->vector);
+	return node->value;
 }
 
 // will use vector_set rather than remove and insert for effieciency reasons.
-HEAP_TYPE extractMaxHeapMaximum(Heap *heap){
-	HEAP_TYPE top = vector_get(0, heap->vector);
+VALUE_TYPE extractMaxHeapMaximum(Heap *heap){
+	HeapNode* top = vector_get(0, heap->vector);
 	vector_set(0, heap_get(heap->size-1, heap), heap->vector);
 	vector_removeIndex(heap->size-1, heap->vector);
 	heap->size--;
 	heap_maxHeapify(0, heap);
-	return top;
+	return top->value;
 }
 // will use vector_set rather than remove and insert for effieciency reasons.
-HEAP_TYPE extractMinHeapMinimum(Heap *heap){
-	HEAP_TYPE top = vector_get(0, heap->vector);
+VALUE_TYPE extractMinHeapMinimum(Heap *heap){
+	HeapNode* top = vector_get(0, heap->vector);
 	vector_set(0, heap_get(heap->size-1, heap), heap->vector);
 	vector_removeIndex(heap->size-1, heap->vector);
 	heap->size--;
 	heap_minHeapify(0, heap);
-	return top;
+	return top->value;
 }
 
 void maxHeapIncreaseKey(int current_index, Heap *heap){
@@ -194,15 +211,48 @@ void minHeapDecreaseKey(int current_index, Heap *heap){
 	}
 }
 
-void maxHeapInsert(HEAP_TYPE value, Heap *heap){
-	heap_add(value, heap);
+void maxHeapInsert(KEY_TYPE key ,VALUE_TYPE value, Heap *heap){
+	heap_add(key, value, heap);
 	maxHeapIncreaseKey(heap->size-1, heap);
 }
-void minHeapInsert(HEAP_TYPE value, Heap *heap){
-	heap_add(value, heap);
+void minHeapInsert(KEY_TYPE key ,VALUE_TYPE value, Heap *heap){
+	heap_add(key, value, heap);
 	minHeapDecreaseKey(heap->size-1, heap);
 }
 
-static int compare(HEAP_TYPE v1, HEAP_TYPE v2, Heap *heap){
-	return (*(heap->heap_compare_function))(v1, v2);
+int heap_getIndex(VALUE_TYPE value, Heap *heap){
+	int counter;
+	for(counter = 0; counter < vector_size(heap->vector); counter++){
+		HeapNode* node = vector_get(counter, heap->vector);
+		if(value == node->value){
+			return counter;
+		}
+	}
+	return -1;
 }
+
+void heap_setKey(KEY_TYPE key, VALUE_TYPE value, Heap *heap){
+	int index = heap_getIndex(value, heap);
+	if(index != -1){
+		HeapNode* node = vector_get(index, heap->vector);
+		node->key = key;
+	}
+}
+
+static HeapNode* heap_get(int current_index, Heap* heap){
+	HeapNode* node = vector_get(current_index, heap->vector);
+	return node;
+}
+
+static int compare(HeapNode* v1, HeapNode* v2, Heap *heap){
+	KEY_TYPE key1 = v1->key;
+	KEY_TYPE key2 = v2->key;
+	return (*(heap->heap_compare_function))(key1, key2);
+}
+
+static int print(void* o, Heap* heap){
+	HeapNode* node = o;
+	VALUE_TYPE value = node->value;
+	(*(heap->heap_print_function))(value);
+}
+

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "hashtable.h"
+#include "hash_map.h"
 
 void int_print(void *s){
 	printf("%d", *((int*)s));
@@ -51,21 +51,19 @@ int cstring_hash(void *v){
 }
 
 int main(){
-	int a = 10;
-	int b = 11;
-	int c = 12;
+	char* a = "Brian";
+	char* b = "Julia";
+	char* c = "Rex";
 
-	char* a1 = "Brian";
-	char* b1 = "Julia";
-	char* c1 = "Rex";
+	HashMap* map = hash_map_constructor(100, &cstring_hash);
+	hash_map_add(a, "Crafton", map);
+	hash_map_add(b, "O'brien", map);
+	hash_map_add(c, "Hoadly", map);
 
-	Hashtable *table = hashtable_constructor(26, &int_hash, &int_compare);
-	table_add(&a, &a, table);
-	printf("%d\n", table_contains(&a, &a, table));
-	printf("%d\n", table_contains(&b, &b, table));
+	printf("%d\n", hash_map_contains(a, map));
+	printf("%d\n", hash_map_contains("Julia", map));
+	printf("%d\n", hash_map_contains("hello", map));
 
-	Hashtable *stable = hashtable_constructor(26, &cstring_hash, &cstring_compare);
-	table_add(a1, a1, stable);
-	printf("%d\n", table_contains(a1, a1, stable));
-	printf("%d\n", table_contains(b1, b1, stable));
+	printf("%s\n", (char*)hash_map_get(a, map));
+	printf("%s\n", (char*)hash_map_get("Julia", map));
 }

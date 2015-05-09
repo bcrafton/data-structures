@@ -7,8 +7,8 @@
 #include "vector.h"
 #include "stack.h"
 #include "queue.h"
-#include "set.h"
-#include "hashtable.h"
+#include "tree_set.h"
+#include "tree_map.h"
 #include "priority_queue.h"
 
 typedef void* GRAPH_TYPE;
@@ -16,6 +16,7 @@ typedef struct Graph Graph;
 typedef struct Edge Edge;
 typedef struct Vertex Vertex;
 
+// keys are for printing purposes only.
 struct Edge {
 	int key;
 	int weight;
@@ -27,14 +28,14 @@ struct Vertex {
 	int key;
 	GRAPH_TYPE value;
 	Vector* edges;
+	TreeMap *paths;
+	TreeMap *distances;
 };
 
 struct Graph{
 	int size;
 	Vector* vertex_list;
 	Vector* edge_list;
-	Hashtable* vertex_table;
-	Hashtable* edge_table;
 };
 
 Edge* add_edge(int key, Vertex* v1, Vertex* v2, int weight, Graph* graph);
@@ -55,5 +56,7 @@ Vertex* get_vertex(int key, Graph* graph);
 Vector* adjacent_vertices(Vertex *vertex);
 void BredthFirstTraversal(Vertex *start);
 void DepthFirstTraversal(Vertex *start);
+Vector* Dijkstra(Vertex* start, Graph* graph);
+void printDistanceFrom(Vertex* from, Graph* graph);
 
 #endif

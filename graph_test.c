@@ -15,6 +15,15 @@ void cstring_print(void *s){
 	printf("%s", (char*)s);
 }
 int int_compare(void *o1, void *o2){
+	if(o1 == NULL && o2 == NULL){
+		return 0;
+	}
+	if(o1 == NULL){
+		return 1;
+	}
+	if(o2 == NULL){
+		return -1;
+	}
 	return *((int*)o1) - *((int*)o2);
 }
 int cstring_compare(void *o1, void *o2){
@@ -37,29 +46,27 @@ int main(){
 	Vertex* v2 = add_vertex(1, b1, graph);
 	Vertex* v3 = add_vertex(2, c1, graph);
 
-	Edge* e1 = add_edge(0, v1, v2, 1, graph);
-	Edge* e2 = add_edge(1, v2, v3, 1, graph);
-	Edge* e3 = add_edge(2, v3, v1, 1, graph);
+	Edge* e1 = add_edge(0, v1, v2, 10, graph);
+	Edge* e2 = add_edge(1, v2, v3, 15, graph);
+	Edge* e3 = add_edge(2, v3, v1, 20, graph);
 
+	/*
+	printf("\n");
 	print_graph(graph);
-
-	printf("\n\n\n");
-
-	print_vertex(v2);
-	Vector* vertices = adjacent_vertices(v2);
-	printf("adjacents:\n");
-	vertices->vector_print_function = &vertex_print_function;
-	vector_print(vertices);
 
 	printf("\n");
 	BredthFirstTraversal(v1);
 	printf("\n");
 	DepthFirstTraversal(v1);
 	printf("\n");
-	Vertex* v = get_vertex(0, graph);
-	printf("\n%d\n", v->key);
-	v = get_vertex(1, graph);
-	printf("\n%d\n", v->key);
-	v = get_vertex(2, graph);
-	printf("\n%d\n", v->key);
+	*/
+
+	int vertexCounter = 0;
+	for(vertexCounter = 0; vertexCounter < graph_vertex_count(graph); vertexCounter++){
+		Vertex* v = vector_get(vertexCounter, graph->vertex_list);
+		Dijkstra(v, graph);
+	}
+	printDistanceFrom(v1, graph);
+	printDistanceFrom(v2, graph);
+	printDistanceFrom(v3, graph);
 }
