@@ -35,6 +35,7 @@ int rbtree_contains(KEY_TYPE key, RBTree* tree);
 void rbtree_stack_print(RBTree *tree);
 VALUE_TYPE rbtree_search(KEY_TYPE key, RBTree *tree);
 void rbtree_stack_inorder_print(RBTree *tree);
+RBTreeNode* rbtree_get(KEY_TYPE key, RBTree* tree);
 
 
 
