@@ -41,16 +41,18 @@ Graph* graph_constructor(){
 }
 Edge* add_edge(int key, Vertex* v1, Vertex* v2, int weight, Graph* graph){
 	// need an assert statement here so cannot create multiple edges between vertices.
+	assert(v1 != NULL && v2 != NULL);
 	Edge* edge = edge_constructor(key, v1, v2, weight);
 	vector_add(edge, v1->edges);
 	vector_add(edge, v2->edges);
 	vector_add(edge, graph->edge_list);
+	Dijkstra(v1, graph);
+	Dijkstra(v2, graph);
 	return edge;
 }
 Vertex* add_vertex(int key, GRAPH_TYPE value, Graph* graph){
 	Vertex *vertex = vertex_constructor(key, value);
 	vector_add(vertex, graph->vertex_list);
-	Dijkstra(vertex, graph);
 	return vertex;
 }
 
@@ -97,7 +99,7 @@ void BredthFirstTraversal(Vertex *start){
 	Queue* vertices = queue_constructor();
 	TreeSet* visited = tree_set_constructor(&vertex_compare);
 	queue_push(start, vertices);
-	tree_set_add(start, visited);
+	tree_set_put(start, visited);
 	while(queueIsEmpty(vertices) == 0){
 		Vertex* front = queue_pop(vertices);
 		Vector* adjacent_vertices_vector = adjacent_vertices(front);
@@ -106,7 +108,7 @@ void BredthFirstTraversal(Vertex *start){
 			Vertex *next = vector_get(counter, adjacent_vertices_vector);
 			if(tree_set_contains(next, visited) == 0){
 				queue_push(next, vertices);
-				tree_set_add(next, visited);
+				tree_set_put(next, visited);
 			}
 		}
 		printf("%d\n", front->key);
@@ -130,7 +132,7 @@ void DepthFirstTraversal(Vertex *start){
 	Stack* vertices = stack_constructor();
 	TreeSet* visited = tree_set_constructor(&vertex_compare);
 	stack_push(start, vertices);
-	tree_set_add(start, visited);
+	tree_set_put(start, visited);
 	while(stackIsEmpty(vertices)==0){
 		Vertex* top = stack_pop(vertices);
 		Vector* adjacent_vertices_vector = adjacent_vertices(top);
@@ -139,7 +141,7 @@ void DepthFirstTraversal(Vertex *start){
 			Vertex *next = vector_get(counter, adjacent_vertices_vector);
 			if(tree_set_contains(next, visited) == 0){
 				stack_push(next, vertices);
-				tree_set_add(next, visited);
+				tree_set_put(next, visited);
 			}
 		}
 		printf("%d\n", top->key);;
@@ -164,17 +166,45 @@ static PriorityQueue* createVertexQueue(Vertex *start, Graph *graph){
 		priorityqueue_push(tree_map_get(start, v->distances), v, queue);
 	}
 	int* weight = toPointer(0);
-	tree_map_add(start, weight, start->distances);
+	tree_map_put(start, weight, start->distances);
 	priorityqueueSetKey(weight, start, queue);
 	return queue;
 }
 
-Vector* Dijkstra(Vertex* start, Graph* graph){
+/*
+bool relax(Graph &g, int u, int v){
+	Graph::vertex_descriptor v1 = u;
+	Graph::vertex_descriptor v2 = v;
+
+	Graph::edge_descriptor e = edge(v1, v2, g).first;
+	if(g[v2].weight > g[v1].weight + g[e].weight)
+	{
+		g[v2].weight = g[v1].weight + g[e].weight;
+		g[v2].pred = v1;
+		return true;
+	}
+	return false;
+}
+*/
+
+/*
+static int relax(Vertex* source, Vertex *target){
+	Edge* bridge = edge_between(front, next);
+	int* weight = toPointer(fromPointer(tree_map_get(start, front->distances)) + bridge->weight);
+	if(tree_map_contains(start, next->distances) == 0 || fromPointer(tree_map_get(start, next->distances)) > *weight){
+		tree_map_put(start, weight, next->distances);
+		return 1;
+	}
+	return 0;
+}
+*/
+
+void Dijkstra(Vertex* start, Graph* graph){
 	TreeSet* visited = tree_set_constructor(&vertex_compare);
 	PriorityQueue* queue = createVertexQueue(start, graph);
 	while(priorityqueueIsEmpty(queue)==0){
 		Vertex* front = priorityqueue_pop(queue);
-		tree_set_add(front, visited);
+		tree_set_put(front, visited);
 		Vector* adjacent_vertices_vector = adjacent_vertices(front);
 		int counter;
 		for(counter = 0; counter < vector_size(adjacent_vertices_vector); counter++) {
@@ -183,7 +213,7 @@ Vector* Dijkstra(Vertex* start, Graph* graph){
 				Edge* bridge = edge_between(front, next);
 				int* weight = toPointer(fromPointer(tree_map_get(start, front->distances)) + bridge->weight);
 				if(tree_map_contains(start, next->distances) == 0 || fromPointer(tree_map_get(start, next->distances)) > *weight){
-					tree_map_add(start, weight, next->distances);
+					tree_map_put(start, weight, next->distances);
 					priorityqueueSetKey(weight, next, queue);
 				}
 			}
@@ -215,10 +245,13 @@ void print_graph(Graph *graph){
 }
 
 void printDistanceFrom(Vertex* from, Graph* graph){
+	printf("Distance from: %d\n", from->key);
 	int vertexCounter;
 	for(vertexCounter = 0; vertexCounter < graph_vertex_count(graph); vertexCounter++){
 		Vertex* next = vector_get(vertexCounter, graph->vertex_list);
-		int weight = fromPointer(tree_map_get(from, next->distances));
-		printf("%d: %d\n", next->key, weight);
+		int* weight = tree_map_get(from, next->distances);
+		if(weight != NULL){
+			printf("%d: %d\n", next->key, fromPointer(weight));
+		}
 	}
 }

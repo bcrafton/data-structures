@@ -25,7 +25,7 @@ int priorityqueueIsEmpty(PriorityQueue *queue){
 void priorityqueueSetKey(KEY_TYPE key, VALUE_TYPE value, PriorityQueue* queue){
 	int index = heap_getIndex(value, queue->heap);
 	if(index != -1){
-		heap_setKey(key, value, queue->heap);
+		heap_setIndex(index, key, value, queue->heap);
 		minHeapDecreaseKey(index, queue->heap);
 	}
 }

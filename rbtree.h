@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "stack.h"
-#include "tree_set.h"
 
 typedef struct RBTreeNode RBTreeNode;
 typedef struct RBTree RBTree;
@@ -31,9 +30,12 @@ RBTreeNode* rbtree_node_constructor(KEY_TYPE key, VALUE_TYPE value, RBTreeNode* 
 RBTree* rbtree_constructor( int (*tree_compare_function)(void*, void*) );
 RBTree* rbtree_constructor_print( void (*tree_print_function)(void*), int (*tree_compare_function)(void*, void*) );
 void rbtree_add(KEY_TYPE key, VALUE_TYPE value, RBTree* tree);
+void rbtree_put(KEY_TYPE key, VALUE_TYPE value, RBTree* tree);
 int rbtree_contains(KEY_TYPE key, RBTree* tree);
 void rbtree_stack_print(RBTree *tree);
 VALUE_TYPE rbtree_search(KEY_TYPE key, RBTree *tree);
 void rbtree_stack_inorder_print(RBTree *tree);
+
+
 
 #endif

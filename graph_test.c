@@ -46,6 +46,7 @@ int main(){
 	Vertex* v2 = add_vertex(1, b1, graph);
 	Vertex* v3 = add_vertex(2, c1, graph);
 
+	//Edge* e = add_edge(0, NULL, v2, 10, graph);
 	Edge* e1 = add_edge(0, v1, v2, 10, graph);
 	Edge* e2 = add_edge(1, v2, v3, 15, graph);
 	Edge* e3 = add_edge(2, v3, v1, 20, graph);
@@ -61,11 +62,6 @@ int main(){
 	printf("\n");
 	*/
 
-	int vertexCounter = 0;
-	for(vertexCounter = 0; vertexCounter < graph_vertex_count(graph); vertexCounter++){
-		Vertex* v = vector_get(vertexCounter, graph->vertex_list);
-		Dijkstra(v, graph);
-	}
 	printDistanceFrom(v1, graph);
 	printDistanceFrom(v2, graph);
 	printDistanceFrom(v3, graph);

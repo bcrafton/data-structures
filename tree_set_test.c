@@ -13,9 +13,9 @@ int main(){
 	char* c = "Rex";
 
 	TreeSet* set = tree_set_constructor(&cstring_compare);
-	tree_set_add(a, set);
-	tree_set_add(b, set);
-	tree_set_add(c, set);
+	tree_set_put(a, set);
+	tree_set_put(b, set);
+	tree_set_put(c, set);
 
 	printf("%d\n", tree_set_contains(a, set));
 	printf("%d\n", tree_set_contains("Julia", set));

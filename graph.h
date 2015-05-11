@@ -56,7 +56,7 @@ Vertex* get_vertex(int key, Graph* graph);
 Vector* adjacent_vertices(Vertex *vertex);
 void BredthFirstTraversal(Vertex *start);
 void DepthFirstTraversal(Vertex *start);
-Vector* Dijkstra(Vertex* start, Graph* graph);
+void Dijkstra(Vertex* start, Graph* graph);
 void printDistanceFrom(Vertex* from, Graph* graph);
 
 #endif

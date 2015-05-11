@@ -228,15 +228,15 @@ int heap_getIndex(VALUE_TYPE value, Heap *heap){
 			return counter;
 		}
 	}
+	// did not find the index.
+	//assert(0);
 	return -1;
 }
 
-void heap_setKey(KEY_TYPE key, VALUE_TYPE value, Heap *heap){
-	int index = heap_getIndex(value, heap);
-	if(index != -1){
-		HeapNode* node = vector_get(index, heap->vector);
-		node->key = key;
-	}
+void heap_setIndex(int index, KEY_TYPE key, VALUE_TYPE value, Heap *heap){
+	if(index >= heap->size){return;}
+	HeapNode* node = heap_node_constructor(key, value, heap);
+	vector_set(index, node, heap->vector);
 }
 
 static HeapNode* heap_get(int current_index, Heap* heap){

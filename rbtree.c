@@ -13,6 +13,9 @@ static RBTreeNode* leftOf(RBTreeNode* node);
 static RBTreeNode* rightOf(RBTreeNode* node);
 static void rotateLeft(RBTreeNode* n, RBTree* tree);
 static void rotateRight(RBTreeNode* n, RBTree* tree);
+static void removeFromParent(RBTreeNode* node);
+static RBTreeNode* predecessor(RBTreeNode* node);
+static void adjustAfterRemoval(RBTreeNode* n, RBTree *tree);
 
 static int node_compare(void *o1, void *o2){
 	if(o1 == NULL && o2 == NULL){return 0;}
@@ -36,6 +39,7 @@ RBTreeNode* rbtree_node_constructor(KEY_TYPE key, VALUE_TYPE value, RBTreeNode* 
 
 RBTree* rbtree_constructor_print( void (*tree_print_function)(void*), int (*tree_compare_function)(void*, void*) ){
 	RBTree *tree = malloc(sizeof(RBTree));
+	tree->size = 0;
 	tree->root = NULL;
 	tree->tree_print_function = tree_print_function;
 	tree->tree_compare_function = tree_compare_function;
@@ -44,6 +48,7 @@ RBTree* rbtree_constructor_print( void (*tree_print_function)(void*), int (*tree
 
 RBTree* rbtree_constructor( int (*tree_compare_function)(void*, void*) ){
 	RBTree *tree = malloc(sizeof(RBTree));
+	tree->size = 0;
 	tree->root = NULL;
 	tree->tree_print_function = NULL;
 	tree->tree_compare_function = tree_compare_function;
@@ -55,13 +60,49 @@ void rbtree_add(KEY_TYPE key, VALUE_TYPE value, RBTree* tree){
 	
 	if(tree->root == NULL){
 		RBTreeNode* newNode = rbtree_node_constructor(key, value, NULL);
-		newNode->red = 0; // this needs to be black or else it tries to get sibling of root which is null.
+		newNode->red = 0; // this needs to be black or else it tries to get sibling of root which is NULL.
 		tree->root = newNode;
 		return;
 	}
 	RBTreeNode* itr = tree->root;
 	while(itr != NULL){
 		if( compare(key, itr->key, tree) > 0){
+			if(itr->right == NULL){
+				RBTreeNode* newNode = rbtree_node_constructor(key, value, itr);
+				itr->right = newNode;
+				adjustAfterInsertion(newNode, tree);
+				return;
+			}
+			itr = rightOf(itr);
+		}
+		else{
+			if(itr->left == NULL){
+				RBTreeNode* newNode = rbtree_node_constructor(key, value, itr);
+				itr->left = newNode;
+				adjustAfterInsertion(newNode, tree);
+				return;
+			}
+			itr = leftOf(itr);
+		}
+	}
+}
+
+void rbtree_put(KEY_TYPE key, VALUE_TYPE value, RBTree* tree){
+	tree->size++;
+	
+	if(tree->root == NULL){
+		RBTreeNode* newNode = rbtree_node_constructor(key, value, NULL);
+		newNode->red = 0; // this needs to be black or else it tries to get sibling of root which is NULL.
+		tree->root = newNode;
+		return;
+	}
+	RBTreeNode* itr = tree->root;
+	while(itr != NULL){
+		if( compare(key, itr->key, tree) == 0){
+			itr->value = value;
+			return;
+		}
+		else if( compare(key, itr->key, tree) > 0){
 			if(itr->right == NULL){
 				RBTreeNode* newNode = rbtree_node_constructor(key, value, itr);
 				itr->right = newNode;
@@ -96,47 +137,6 @@ VALUE_TYPE rbtree_search(KEY_TYPE key, RBTree* tree){
 		}
 	}
 	return NULL;
-}
-
-void rbtree_stack_inorder_print(RBTree *tree){
-	Stack *stack = stack_constructor();
-	TreeSet* visited = tree_set_constructor(&node_compare);
-	stack_push(tree->root, stack);
-	tree_set_add(tree->root, visited);
-
-	while(stackIsEmpty(stack) == 0){
-		RBTreeNode* top = stack_top(stack);
-		if(top->left != NULL && tree_set_contains(top->left, visited) == 0){
-			stack_push(top->left, stack);
-			tree_set_add(top->left, visited);
-			continue;
-		}
-
-		print(top->key, tree);
-		if(top->parent != NULL){
-			printf(" parent: ");
-			print(top->parent->key, tree);
-		}
-		if(top->right != NULL){
-			printf(" right: ");
-			print(top->right->key, tree);
-		}
-		if(top->left != NULL){
-			printf(" left: ");
-			print(top->left->key, tree);
-		}
-		printf("\n");
-
-		stack_pop(stack);
-
-		if(top->right != NULL && tree_set_contains(top->right, visited) == 0){
-			stack_push(top->right, stack);
-			tree_set_add(top->right, visited);
-			continue;
-		}
-		
-	}
-	printf("[%d]\n", tree->size);
 }
 
 void rbtree_stack_print(RBTree *tree){
@@ -206,15 +206,141 @@ static void adjustAfterInsertion(RBTreeNode* n, RBTree* tree) {
     setColor(tree->root, 0);
 }
 
+void rbtree_remove(KEY_TYPE key, RBTree* tree) {
+    RBTreeNode* node = rbtree_search(key, tree);
+    if (node == NULL) {
+        // No such object, do nothing.
+        return;
+    } else if (leftOf(node) != NULL && rightOf(node) != NULL) {
+        // Node has two children, Copy predecessor data in.
+        RBTreeNode* pred = predecessor(node);
+        //pred->parent->right == pred->left;
+        node->key = pred->key;
+        node->value = pred->value;
+        //node.setData(predecessor.getData());
+        //node = (Node) predecessor;
+        node = pred;
+    }
+    // At this point node has zero or one child ...
+    // this is because we node now equals pred and pred does not have a right child.
+    RBTreeNode* pullUp = leftOf(node) == NULL ? rightOf(node) : leftOf(node);
+    if (pullUp != NULL) {
+        // Splice out node, and adjust if pullUp is a double black.
+        if (node == tree->root) {
+        	tree->root = pullUp;
+        } else if (leftOf(parentOf(node)) == node) {
+            node->parent->left = pullUp;
+            pullUp->parent = node->parent;
+        } else {
+            node->parent->right = pullUp;
+            pullUp->parent = node->parent;
+        }
+        if (isBlack(node)) {
+            adjustAfterRemoval(pullUp, tree);
+        }
+    } else if (node == tree->root) {
+        // Nothing to pull up when deleting a root means we emptied the tree
+        tree->root = NULL;
+    } else {
+        // The node being deleted acts as a double black sentinel
+        if (isBlack(node)) {
+            adjustAfterRemoval(node, tree);
+        }
+        //node.removeFromParent();
+        removeFromParent(node);
+    }
+}
+
+static void adjustAfterRemoval(RBTreeNode* n, RBTree *tree) {
+    while (n != tree->root && isBlack(n)) {
+        if (n == leftOf(parentOf(n))) {
+            // Pulled up node is a left child
+            RBTreeNode* sibling = rightOf(parentOf(n));
+            if (isRed(sibling)) {
+                setColor(sibling, 0);
+                setColor(parentOf(n), 1);
+                rotateLeft(parentOf(n), tree);
+                sibling = rightOf(parentOf(n));
+            }
+            if (isBlack(leftOf(sibling)) && isBlack(rightOf(sibling))) {
+                setColor(sibling, 1);
+                n = parentOf(n);
+            } else {
+                if (isBlack(rightOf(sibling))) {
+                    setColor(leftOf(sibling), 0);
+                    setColor(sibling, 1);
+                    rotateRight(sibling, tree);
+                    sibling = rightOf(parentOf(n));
+                }
+                setColor(sibling, isRed(parentOf(n)));
+                setColor(parentOf(n), 0);
+                setColor(rightOf(sibling), 0);
+                rotateLeft(parentOf(n), tree);
+                n = tree->root;
+            }
+        } else {
+            // pulled up node is a right child
+            RBTreeNode* sibling = leftOf(parentOf(n));
+            if (isRed(sibling)) {
+                setColor(sibling, 0);
+                setColor(parentOf(n), 1);
+                rotateRight(parentOf(n), tree);
+                sibling = leftOf(parentOf(n));
+            }
+            if (isBlack(leftOf(sibling)) && isBlack(rightOf(sibling))) {
+                setColor(sibling, 1);
+                n = parentOf(n);
+            } else {
+                if (isBlack(leftOf(sibling))) {
+                    setColor(rightOf(sibling), 0);
+                    setColor(sibling, 1);
+                    rotateLeft(sibling, tree);
+                    sibling = leftOf(parentOf(n));
+                }
+                setColor(sibling, isRed(parentOf(n)));
+                setColor(parentOf(n), 0);
+                setColor(leftOf(sibling), 0);
+                rotateRight(parentOf(n), tree);
+                n = tree->root;
+            }
+        }
+    }
+    setColor(n, 0);
+}
+
+/*
+public void removeFromParent() {
+    if (parent != NULL) {
+        if (parent.left == this) {
+            parent.left = NULL;
+        } else if (parent.right == this) {
+            parent.right = NULL;
+        }
+        this.parent = NULL;
+    }
+}
+*/
+static void removeFromParent(RBTreeNode* node){
+	RBTreeNode* parent = parentOf(node);
+	if(parent == NULL){return;}
+	if(leftOf(parent) == node){
+		parent->left = NULL;
+	}
+	else if(rightOf(parent) == node){
+		parent->right = NULL;
+	}
+	node->parent = NULL;
+}
+
 
 /*
 protected void rotateLeft(BinaryTreeNode<E> n) {
-    if (n.getRight() == null) {
+    if (n.getRight() == NULL) {
         return;
     }
     BinaryTreeNode<E> oldRight = n.getRight();
     n.setRight(oldRight.getLeft());
-    if (n.getParent() == null) {
+    if (n.getParent() == NULL) {
         root = oldRight;
     } else if (n.getParent().getLeft() == n) {
         n.getParent().setLeft(oldRight);
@@ -242,12 +368,12 @@ static void rotateLeft(RBTreeNode* n, RBTree* tree){
 }
 /*
 protected void rotateRight(BinaryTreeNode<E> n) {
-    if (n.getLeft() == null) {
+    if (n.getLeft() == NULL) {
         return;
     }
     BinaryTreeNode<E> oldLeft = n.getLeft();
     n.setLeft(oldLeft.getRight());
-    if (n.getParent() == null) {
+    if (n.getParent() == NULL) {
         root = oldLeft;
     } else if (n.getParent().getLeft() == n) {
         n.getParent().setLeft(oldLeft);
@@ -272,6 +398,28 @@ static void rotateRight(RBTreeNode* n, RBTree* tree){
 	oldLeft->right = n;
 	oldLeft->parent = n->parent;
 	n->parent = oldLeft;
+}
+/*
+protected BinaryTreeNode<E> predecessor(BinaryTreeNode<E> node) {
+    BinaryTreeNode<E> n = node.getLeft();
+    if (n != NULL) {
+        while (n.getRight() != NULL) {
+            n = n.getRight();
+        }
+    }
+    return n;
+}
+*/
+
+// for remove, if it has no left node ... then predecessor is the parent and can just connect right and parent.
+static RBTreeNode* predecessor(RBTreeNode* node){
+	RBTreeNode* n = leftOf(node);
+	if(n != NULL){
+		while(rightOf(n) != NULL){
+			n = rightOf(n);
+		}
+	}
+	return n;
 }
 
 static int compare(KEY_TYPE v1, KEY_TYPE v2, RBTree *tree){

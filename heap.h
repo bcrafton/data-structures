@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "vector.h"
+#include <assert.h>
 
 typedef struct Heap Heap;
 typedef struct HeapNode HeapNode;
@@ -31,7 +32,7 @@ int heap_left(int current_index);
 
 //static HeapNode* heap_get(int current_index, Heap* heap);
 
-void heap_setKey(KEY_TYPE key, VALUE_TYPE value, Heap *heap);
+void heap_setIndex(int index, KEY_TYPE key, VALUE_TYPE value, Heap *heap);
 int heap_getIndex(VALUE_TYPE value, Heap *heap);
 void heap_maxHeapify(int current_index, Heap* heap);
 void heap_buildMaxHeap(Heap* heap);

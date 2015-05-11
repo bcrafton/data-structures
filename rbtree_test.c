@@ -29,9 +29,8 @@ int main(){
 	printf("\n%d\n", rbtree_contains("hello", tree));
 
 	rbtree_stack_print(tree);
-	rbtree_stack_inorder_print(tree);
+
+	rbtree_remove("Chris", tree);
 
 	printf("test complete\n");
-
-
 }
