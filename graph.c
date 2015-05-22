@@ -102,10 +102,9 @@ void BredthFirstTraversal(Vertex *start){
 	tree_set_put(start, visited);
 	while(queueIsEmpty(vertices) == 0){
 		Vertex* front = queue_pop(vertices);
-		Vector* adjacent_vertices_vector = adjacent_vertices(front);
-		int counter;
-		for(counter = 0; counter < vector_size(adjacent_vertices_vector); counter++) {
-			Vertex *next = vector_get(counter, adjacent_vertices_vector);
+		Iterator* adjacent_vertices_iterator = adjacent_vertices(front);
+		while(iterator_next(adjacent_vertices_iterator)) {
+			Vertex *next = iterator_next(adjacent_vertices_iterator);
 			if(tree_set_contains(next, visited) == 0){
 				queue_push(next, vertices);
 				tree_set_put(next, visited);
@@ -135,10 +134,9 @@ void DepthFirstTraversal(Vertex *start){
 	tree_set_put(start, visited);
 	while(stackIsEmpty(vertices)==0){
 		Vertex* top = stack_pop(vertices);
-		Vector* adjacent_vertices_vector = adjacent_vertices(top);
-		int counter;
-		for(counter = 0; counter < vector_size(adjacent_vertices_vector); counter++) {
-			Vertex *next = vector_get(counter, adjacent_vertices_vector);
+		Iterator* adjacent_vertices_iterator = adjacent_vertices(top);
+		while(iterator_hasNext(adjacent_vertices_iterator)) {
+			Vertex *next = iterator_next(adjacent_vertices_iterator);
 			if(tree_set_contains(next, visited) == 0){
 				stack_push(next, vertices);
 				tree_set_put(next, visited);
@@ -205,10 +203,9 @@ void Dijkstra(Vertex* start, Graph* graph){
 	while(priorityqueueIsEmpty(queue)==0){
 		Vertex* front = priorityqueue_pop(queue);
 		tree_set_put(front, visited);
-		Vector* adjacent_vertices_vector = adjacent_vertices(front);
-		int counter;
-		for(counter = 0; counter < vector_size(adjacent_vertices_vector); counter++) {
-			Vertex *next = vector_get(counter, adjacent_vertices_vector);
+		Iterator* adjacent_vertices_iterator = adjacent_vertices(front);
+		while(iterator_hasNext(adjacent_vertices_iterator)) {
+			Vertex *next = iterator_next(adjacent_vertices_iterator);
 			if(tree_set_contains(next, visited) == 0) {
 				Edge* bridge = edge_between(front, next);
 				int* weight = toPointer(fromPointer(tree_map_get(start, front->distances)) + bridge->weight);
@@ -221,16 +218,16 @@ void Dijkstra(Vertex* start, Graph* graph){
 	}
 }
 
-Vector* adjacent_vertices(Vertex *vertex){
-	Vector* vertices = vector_constructor();
+Iterator* adjacent_vertices(Vertex *vertex){
+	Iterator* vertices = iterator_constructor();
 	int edge_counter = 0;
 	for(edge_counter = 0; edge_counter < vertex_edge_count(vertex); edge_counter++){
 		Edge *e = vector_get(edge_counter, vertex->edges);
 		if(e->v1 != vertex){
-			vector_add(e->v1, vertices);
+			iterator_push(e->v1, vertices);
 		}
 		else{
-			vector_add(e->v2, vertices);
+			iterator_push(e->v2, vertices);
 		}
 	}
 	return vertices;

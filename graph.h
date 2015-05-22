@@ -10,6 +10,7 @@
 #include "tree_set.h"
 #include "tree_map.h"
 #include "priority_queue.h"
+#include "iterator.h"
 
 typedef void* GRAPH_TYPE;
 typedef struct Graph Graph;
@@ -53,7 +54,7 @@ void print_vertex(Vertex *vertex);
 Edge* get_edge(int key, Graph* graph);
 Vertex* get_vertex(int key, Graph* graph);
 
-Vector* adjacent_vertices(Vertex *vertex);
+Iterator* adjacent_vertices(Vertex *vertex);
 void BredthFirstTraversal(Vertex *start);
 void DepthFirstTraversal(Vertex *start);
 void Dijkstra(Vertex* start, Graph* graph);
