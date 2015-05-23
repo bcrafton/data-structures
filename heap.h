@@ -23,7 +23,7 @@ struct HeapNode{
 	VALUE_TYPE value;
 };
 
-HeapNode* heap_node_constructor(KEY_TYPE key, VALUE_TYPE value, Heap *heap);
+HeapNode* heap_node_constructor(KEY_TYPE key, VALUE_TYPE value);
 Heap* heap_constructor_print( void (*heap_print_function)(void*), int (*heap_compare_function)(void*, void*) );
 Heap* heap_constructor( int (*heap_compare_function)(void*, void*) );
 int heap_parent(int current_index);

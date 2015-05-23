@@ -5,7 +5,7 @@ static int compare(HeapNode* v1, HeapNode* v2, Heap *heap);
 static HeapNode* heap_get(int current_index, Heap* heap);
 static int print(void* o, Heap* heap);
 
-HeapNode* heap_node_constructor(KEY_TYPE key, VALUE_TYPE value, Heap *heap){
+HeapNode* heap_node_constructor(KEY_TYPE key, VALUE_TYPE value){
 	HeapNode* node = malloc(sizeof(HeapNode));
 	node->key = key;
 	node->value = value;
@@ -77,7 +77,7 @@ void heap_maxHeapify(int current_index, Heap* heap){
 }
 
 void heap_add(KEY_TYPE key, VALUE_TYPE value, Heap *heap){
-	HeapNode* node = heap_node_constructor(key, value, heap);
+	HeapNode* node = heap_node_constructor(key, value);
 	vector_add(node, heap->vector);
 	heap->size++;
 }
@@ -235,7 +235,7 @@ int heap_getIndex(VALUE_TYPE value, Heap *heap){
 
 void heap_setIndex(int index, KEY_TYPE key, VALUE_TYPE value, Heap *heap){
 	if(index >= heap->size){return;}
-	HeapNode* node = heap_node_constructor(key, value, heap);
+	HeapNode* node = heap_node_constructor(key, value);
 	vector_set(index, node, heap->vector);
 }
 
