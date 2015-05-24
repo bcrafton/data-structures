@@ -14,10 +14,10 @@ int main(){
 	queue_push(a1, queue);
 	queue_push(b1, queue);
 	queue_push(c1, queue);
-
+	
 	assert(strcmp((char*)queue_pop(queue), a1) == 0);
 	assert(strcmp((char*)queue_pop(queue), b1) == 0);
 	assert(strcmp((char*)queue_pop(queue), c1) == 0);
-
+	
 	printf("test complete\n");
 }

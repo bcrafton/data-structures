@@ -31,5 +31,7 @@ void list_insert(int index, LIST_TYPE value, List *list);
 void list_prepend(LIST_TYPE value, List* list);
 void list_remove(int index, List *list);
 LIST_TYPE list_get(int index, List *list);
+void list_removeFirst(List *list);
+void list_removeLast(List *list);
 
 #endif

@@ -79,6 +79,8 @@ void list_insert(int index, LIST_TYPE value, List *list){
 		return;
 	}
 	Node* newNode = node_constructor(value);
+	// this wud break if it wasnt the case that the only way to insert something to a empty list is to insert it into the 0 index. 
+	// whcih means prepend will handle this fine.
 	if(index == 0){
 		list_prepend(value, list);
 	}
@@ -125,6 +127,12 @@ void list_remove(int index, List *list){
 	if(index >= list->size || index < 0){
 		printf("index is out of bounds.\n");
 		assert(0);
+		return;
+	}
+	if(list->size == 1){
+		list->head == NULL;
+		list->tail == NULL;
+		list->size--;
 		return;
 	}
 	if(index == 0){
