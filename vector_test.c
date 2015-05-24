@@ -27,5 +27,22 @@ int main(){
 	assert(vector->next == 3);
 	assert(vector_size(vector) == 3);
 
+	//vector_set(3, "Daniel", vector);
+	//vector_insert(4, "Daniel", vector);
+	vector_insert(0, "Ariel", vector);
+	vector_insert(1, "Booth", vector);
+	vector_insert(3, "Daniel", vector);
+	vector_set(2, "Sam", vector);
+	assert(strcmp((char*)vector_get(3, vector), "Daniel") == 0);
+	assert(strcmp((char*)vector_get(2, vector), "Sam") == 0);
+
+	vector_print(vector);
+	vector_removeIndex(5, vector);
+	vector_print(vector);
+	vector_removeIndex(0, vector);
+	vector_print(vector);
+	vector_removeIndex(1, vector);
+	vector_print(vector);
+
 	printf("test complete\n");
 }

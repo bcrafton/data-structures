@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 typedef void* LIST_TYPE;
 typedef struct List List;

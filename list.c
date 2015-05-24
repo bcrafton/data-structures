@@ -55,22 +55,35 @@ void list_prepend(LIST_TYPE value, List* list){
 	list->size++;
 }
 
-// code will break if only 1 element in the list
+void list_set(int index, LIST_TYPE value, List *list){
+	if(index >= list->size || index < 0){
+		printf("index is out of bounds.\n");
+		assert(0);
+		return;
+	}
+	int counter = 0;
+	Node* ptr;
+	for(ptr = list->head; ptr != NULL; ptr = ptr->next){
+		if(counter == index){
+			ptr->value = value;
+			return;
+		}
+		counter++;
+	}
+}
+
 void list_insert(int index, LIST_TYPE value, List *list){
+	if(index > list->size || index < 0){
+		printf("index is out of bounds.\n");
+		assert(0);
+		return;
+	}
 	Node* newNode = node_constructor(value);
-	if(list->head == NULL && list->tail == NULL){
-		list->head = newNode;
-		list->tail = newNode;
+	if(index == 0){
+		list_prepend(value, list);
 	}
-	else if(index >= list->size){
-		list->tail->next = newNode;
-		newNode->prev = list->tail;
-		list->tail = newNode;
-	}
-	else if(index <= 0){
-		list->head->prev = newNode;
-		newNode->next = list->head;
-		list->head = newNode;
+	else if(index == list->size){
+		list_append(value, list);
 	}
 	else{
 		int counter = 0;
@@ -83,29 +96,42 @@ void list_insert(int index, LIST_TYPE value, List *list){
 				newNode->prev = left;
 				right->prev = newNode;
 				newNode->next = right;
+				list->size++;
 				return;
 			}
 			counter++;
 		}
 	}
-	list->size++;
+}
+
+void list_removeFirst(List *list){
+	Node* newHead = list->head->next;
+	Node* oldHead = list->head;
+	newHead->prev = NULL;
+	oldHead->next = NULL;
+	list->head = newHead;
+	list->size--;
+}
+void list_removeLast(List *list){
+	Node* newTail = list->tail->prev;
+	Node* oldTail = list->tail;
+	newTail->next = NULL;
+	oldTail->prev = NULL;
+	list->tail = newTail;
+	list->size--;
 }
 
 void list_remove(int index, List *list){
-	if(list->head == NULL && list->tail == NULL){
+	if(index >= list->size || index < 0){
+		printf("index is out of bounds.\n");
+		assert(0);
 		return;
 	}
-	else if(list->size == 1){
-		list->head = NULL;
-		list->tail = NULL;
+	if(index == 0){
+		list_removeFirst(list);
 	}
-	else if(index >= list->size){
-		list->tail = list->tail->prev;
-		list->tail->next = NULL;
-	}
-	else if(index <= 0){
-		list->head = list->head->next;
-		list->head->prev = NULL;
+	else if(index == list->size-1){
+		list_removeLast(list);
 	}
 	else{
 		int counter = 0;
@@ -116,11 +142,12 @@ void list_remove(int index, List *list){
 				Node* right = ptr->next;
 				left->next = right;
 				right->prev = left;
+				list->size--;
+				return;
 			}
 			counter++;
 		}
 	}
-	list->size--;
 }
 
 LIST_TYPE list_get(int index, List *list){

@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 typedef void* VECTOR_TYPE;
 typedef struct Vector Vector;
@@ -33,5 +34,6 @@ void vector_insert(int index, VECTOR_TYPE value, Vector *vector);
 void vector_swap(int index1, int index2, Vector *vector);
 int vector_size(Vector *vector);
 VECTOR_TYPE linear_search(VECTOR_TYPE value, Vector *vector);
+void vector_set(int index, VECTOR_TYPE value, Vector *vector);
 
 #endif

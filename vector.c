@@ -1,5 +1,8 @@
 #include "vector.h"
 
+// this is a list, so it uses list behavior on insertions, sets, and removes.
+// shud these methods be booleans? so as to return true if it was done correctly.
+
 static void set_null(VECTOR_TYPE *array, int capacity);
 static int print(VECTOR_TYPE v, Vector *vector);
 static int compare(VECTOR_TYPE v1, VECTOR_TYPE v2, Vector *vector);
@@ -73,17 +76,26 @@ VECTOR_TYPE vector_get(int index, Vector *vector){
 }
 
 void vector_removeIndex(int index, Vector *vector){
-	vector->next--;
+	if(index >= vector->next || index < 0){
+		printf("index is out of bounds.\n");
+		assert(0);
+		return;
+	}
 
 	int indexCounter;
-	for(indexCounter = index; indexCounter < vector->next; indexCounter++){
+	for(indexCounter = index; indexCounter < vector->next-1; indexCounter++){
 		vector->array[indexCounter] = vector->array[indexCounter+1];
 	}
-	// vector only deals with pointers, so this should be set to NULL.
 	vector->array[vector->next] = NULL;
+	vector->next--;
 }
 
 void vector_insert(int index, VECTOR_TYPE value, Vector *vector){
+	if(index > vector->next || index < 0){
+		printf("index is out of bounds.\n");
+		assert(0);
+		return;
+	}
 	if(vector->next >= vector->capacity){vector_resize(vector);}
 	int indexCounter;
 	for(indexCounter = vector->next; indexCounter >= index; indexCounter--){
@@ -94,6 +106,11 @@ void vector_insert(int index, VECTOR_TYPE value, Vector *vector){
 }
 
 void vector_set(int index, VECTOR_TYPE value, Vector *vector){
+	if(index >= vector->next || index < 0){
+		printf("index is out of bounds.\n");
+		assert(0);
+		return;
+	}
 	vector->array[index] = value;
 }
 
