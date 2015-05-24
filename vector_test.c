@@ -7,7 +7,14 @@
 void cstring_print(void *s){
 	printf("%s", (char*)s);
 }
-
+void int_print(void *s){
+	printf("%d", *((int*)s));
+}
+int* toPointer(int value){
+	int* temp = malloc(sizeof(int));
+	*temp = value;
+	return temp;
+}
 int main(){
 	char* a1 = "Brian";
 	char* b1 = "Julia";
@@ -42,6 +49,31 @@ int main(){
 	vector_removeIndex(0, vector);
 	vector_print(vector);
 	vector_removeIndex(1, vector);
+	vector_print(vector);
+
+	vector = vector_constructor_print(&int_print);
+	int counter;
+	for(counter = 0; counter < 10; counter++){
+		vector_insert(counter, toPointer(counter), vector);
+	}
+	vector_print(vector);
+
+	vector = vector_constructor_print(&int_print);
+	for(counter = 0; counter < 11; counter++){
+		vector_insert(counter, toPointer(counter), vector);
+	}
+	vector_print(vector);
+
+	vector = vector_constructor_print(&int_print);
+	for(counter = 0; counter < 12; counter++){
+		vector_insert(counter, toPointer(counter), vector);
+	}
+	vector_print(vector);
+
+	vector = vector_constructor_print(&int_print);
+	for(counter = 0; counter < 9; counter++){
+		vector_insert(counter, toPointer(counter), vector);
+	}
 	vector_print(vector);
 
 	printf("test complete\n");
