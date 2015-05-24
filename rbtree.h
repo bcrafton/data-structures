@@ -5,6 +5,12 @@
 #include <stdlib.h>
 #include "stack.h"
 
+enum Color{
+	Black,
+	Red
+};
+typedef enum Color Color;
+
 typedef struct RBTreeNode RBTreeNode;
 typedef struct RBTree RBTree;
 typedef void* KEY_TYPE;
@@ -16,7 +22,7 @@ struct RBTreeNode {
 	RBTreeNode* parent;
 	RBTreeNode* left;
 	RBTreeNode* right;
-	int red;
+	Color color;
 };
 
 struct RBTree{
