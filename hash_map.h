@@ -3,14 +3,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "vector.h"
 
 typedef struct HashMap HashMap;
 typedef void* VALUE_TYPE;
 typedef void* KEY_TYPE;
 
 struct HashMap{
-	Vector *vector;
+	VALUE_TYPE *array;
 	int capacity;
 	int (*hashmap_hash_function)(void*);
 };

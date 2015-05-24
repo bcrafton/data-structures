@@ -9,7 +9,7 @@ typedef struct HashSet HashSet;
 typedef void* SET_TYPE;
 
 struct HashSet{
-	Vector *vector;
+	SET_TYPE *array;
 	int capacity;
 	int (*hashset_hash_function)(void*);
 };
