@@ -27,7 +27,10 @@ HardwareFifo* fifo_constructor(uint size, uint num_fifos, uint num_buffers, uint
 
 uint fifo_push(uint id, TYPE value, HardwareFifo* fifo)
 {
-	if()
+	if( buffer_full(fifo->fifos[id]) )
+	{
+		allocate_buffer(id, fifo);
+	}
 }
 
 uint fifo_pop(uint id, HardwareFifo* fifo)
@@ -40,14 +43,10 @@ TYPE fifo_top(uint id, HardwareFifo* fifo)
 
 static uint allocate_buffer(uint id, HardwareFifo* fifo)
 {
-	if(fifo->fifos[id]->size == 0)
-	{
-		list_append(fifo->fifos[id]);
-	}
-	list_append();
 }
 
 static uint deallocate_buffer(HardwareFifo* fifo, CircularBuffer* buffer)
 {
-
 }
+
+

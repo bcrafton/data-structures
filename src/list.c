@@ -106,40 +106,44 @@ void list_insert(int index, LIST_TYPE value, List *list){
 	}
 }
 
-void list_removeFirst(List *list){
+LIST_TYPE list_removeFirst(List *list){
+	LIST_TYPE ret = list->head->value;
 	Node* newHead = list->head->next;
 	Node* oldHead = list->head;
 	newHead->prev = NULL;
 	oldHead->next = NULL;
 	list->head = newHead;
 	list->size--;
+	return ret;
 }
-void list_removeLast(List *list){
+LIST_TYPE list_removeLast(List *list){
+	LIST_TYPE ret = list->tail->value;
 	Node* newTail = list->tail->prev;
 	Node* oldTail = list->tail;
 	newTail->next = NULL;
 	oldTail->prev = NULL;
 	list->tail = newTail;
 	list->size--;
+	return ret;
 }
 
 void list_remove(int index, List *list){
 	if(index >= list->size || index < 0){
 		printf("index is out of bounds.\n");
 		assert(0);
-		return;
+		return NULL;
 	}
 	if(list->size == 1){
 		list->head == NULL;
 		list->tail == NULL;
 		list->size--;
-		return;
+		return NULL;
 	}
 	if(index == 0){
-		list_removeFirst(list);
+		return list_removeFirst(list);
 	}
 	else if(index == list->size-1){
-		list_removeLast(list);
+		return list_removeLast(list);
 	}
 	else{
 		int counter = 0;
