@@ -17,7 +17,7 @@ struct HardwareFifo{
 	uint num_buffers;
 	uint blk_size;
 	List** fifos;
-	CircularBuffer** buffers;
+	List* buffers;
 };
 
 HardwareFifo* fifo_constructor(uint size, uint num_fifos, uint num_buffers, uint blk_size);
