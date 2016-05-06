@@ -13,7 +13,6 @@ uint buffer_push(TYPE value, CircularBuffer* buf)
 {
 	if(buffer_full(buf))
 	{
-		printf("its full\n");
 		return 0;
 	}
 
