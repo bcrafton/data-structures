@@ -127,7 +127,7 @@ LIST_TYPE list_removeLast(List *list){
 	return ret;
 }
 
-void list_remove(int index, List *list){
+LIST_TYPE list_remove(int index, List *list){
 	if(index >= list->size || index < 0){
 		printf("index is out of bounds.\n");
 		assert(0);
@@ -155,10 +155,11 @@ void list_remove(int index, List *list){
 				left->next = right;
 				right->prev = left;
 				list->size--;
-				return;
+				return ptr;
 			}
 			counter++;
 		}
+        return NULL;
 	}
 }
 
